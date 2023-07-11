@@ -1,0 +1,7 @@
+Cuando clonas un proyecto de laravel, lo primero que debes hacer es:
+
+editar los datos del archivo .env
+aplicar el comando composer install
+
+php artisan key:generate para que te genere una nueva clave al proyecto
+npm install para que installe todos los paquetes y revisar el archivo .gitignore donde se encuentra todo lo que se ignora
