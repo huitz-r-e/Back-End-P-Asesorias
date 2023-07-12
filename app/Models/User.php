@@ -19,6 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'lastname',
+        'mat',
+        'rol_id',
+        'edad',
+        'sexo',
+        'active',
         'email',
         'password',
     ];
@@ -42,4 +48,27 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+
+    //Hay una relacion de uno a uno para los Cvs
+    public function addCv()
+    {
+        return $this->hasOne(Cv::class);
+    }
+
+
+
+
+    //Hay una relacion de uno a muchas para las asesorias
+    public function addAsesoria()
+    {
+        return $this->hasMany(InfoAsesoria::class);
+    }
+
+     //Hay una relacion de uno a muchas para las registros a las asesorias
+     public function addRegistro()
+     {
+         return $this->hasMany(Registro::class);
+     }
+     
 }
