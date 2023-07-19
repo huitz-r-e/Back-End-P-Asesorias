@@ -18,8 +18,8 @@ return new class extends Migration
             $table->string('lastname');
             $table->integer('edad');
             $table->string('sexo');
-            // $table->unsignedBigInteger('rol_id')->default(3);
-            $table->unsignedBigInteger('rol_id')->nullable();
+            $table->foreign('rol_id')->references('id')->on('roles');
+            $table->unsignedBigInteger('rol_id');
             $table->tinyInteger('active')->default(1);
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();

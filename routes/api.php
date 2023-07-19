@@ -22,5 +22,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 //Routes for user
-Route::post('login',[AuthController::class, 'startLogin']);
-Route::post('register',[AuthController::class, 'formRegister']);
+Route::post('login',[AuthController::class, 'startLogin']); //Iniciar sesion
+Route::post('register',[AuthController::class, 'formRegister']); //Registrar usuario
+Route::put('/actualizar/{id}',[AuthController::class, 'update']); //Actualizar usuarios
+Route::get('/users/{id}',[AuthController::class, 'getUserById']); //Traer usuario por id
+Route::get('users',[AuthController::class, 'getAllUsers']); //Traer todos los usuarios 
+Route::delete('/users/{id}',[AuthController::class, 'deleteUserById']); //Borrar usuario por Id

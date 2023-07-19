@@ -56,6 +56,12 @@ class User extends Authenticatable
         return $this->hasOne(Cv::class);
     }
 
+    //Hay una relacion de uno a uno para los roles
+    public function rol()
+    {
+        return $this->hasOne(Role::class);
+    }
+
 
 
 
