@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('cvs', function (Blueprint $table) {
             $table->id();
+            $table->string('razon')->nullable();
             $table->string('rutaCv');
-            $table->string('comentariocv');
+            $table->string('comentariocv')->nullable();
             $table->unsignedBigInteger('statuscv_id')->default(12);
             $table->foreign('statuscv_id')->references('id')->on('infostatus');
             $table->unsignedBigInteger('user_id');
