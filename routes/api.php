@@ -3,7 +3,8 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-
+use App\Http\Controllers\InfoAsesoriaController;
+use App\Models\InfoAsesoria;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,38 +17,54 @@ use App\Http\Controllers\AuthController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+
+// });
+
+
+
+Route::middleware(['auth:sanctum'])->group(function() {
+    //Routes for user
+Route::get('logout', [AuthController::class, 'endLogin']); //Cerrar sesion
+Route::put('/actualizar/{id}', [AuthController::class, 'update']); //Actualizar usuario
+Route::get('/users/{id}', [AuthController::class, 'getUserById']); //Traer usuario por id
+Route::get('users', [AuthController::class, 'getAllUsers']); //Traer todos los usuarios sin ninguna condicion
+Route::delete('/users/{id}', [AuthController::class, 'deleteUserById']); //Borrar usuario por Id de la DB
+
+Route::delete('/activaruser/{id}', [AuthController::class, 'activarUserById']); //Activar usuario por Id de la DB, cambiar a 1
+Route::delete('/desactivaruser/{id}', [AuthController::class, 'desactivarUserById']); //Desactivar usuario por Id de la DB, cambiar a 0
+
+Route::delete('activarusers', [AuthController::class, 'activarAllUsers']); //Activar todos los usuarios por Id de la DB sin importar rol, cambiar a 1
+Route::delete('desactivarusers', [AuthController::class, 'desactivarAllUsers']); //Desactivar todos los usuarios por Id de la DB sin importar rol, cambiar a 0
+
+Route::delete('desactivaradmins', [AuthController::class, 'desactivarAdmins']); //Desactivar todos los admins, cambiar active a 0
+Route::delete('desactivarexperts', [AuthController::class, 'desactivarExperts']); //Desactivar todos los expertos, cambiar active a 0
+Route::delete('desactivarstudents', [AuthController::class, 'desactivarStudents']); //Desactivar todos los estudiantes, cambiar active a 0
+
+Route::delete('activaradmins', [AuthController::class, 'activarAdmins']); //Activar todos los admins, cambiar active a 1
+Route::delete('activarexperts', [AuthController::class, 'activarExperts']); //Activar todos los expertos, cambiar active a 1
+Route::delete('activarstudents', [AuthController::class, 'activarStudents']); //Activar todos los estudiantes, cambiar active a 1
+
+
+Route::post('registerAdmin', [AuthController::class, 'addAdmin']); //Registrar admin sin necesidad de poner su rol_id
+Route::post('registerExpert', [AuthController::class, 'addExpert']); //Registrar experto sin necesidad de poner su rol_id
+Route::post('registerStudent', [AuthController::class, 'addStudent']); //Registrar estudiante sin necesidad de poner su rol_id
+Route::get('admins', [AuthController::class, 'getAllAdmins']); //Traer todos los admins que esten activos
+Route::get('experts', [AuthController::class, 'getAllExperts']); //Traer todos los expertos que esten activos
+Route::get('students', [AuthController::class, 'getAllStudents']); //Traer todos los estudiantes que esten activos
+
+//Rutas de asesorias de parte del experto
+Route::post('registrarAsesoria', [InfoAsesoriaController::class, 'addAsesoria']); //Registrar una asesoria por el experto agrega user_id manual
+Route::post('registrarA', [InfoAsesoriaController::class, 'agregarAse']); //Registrar una asesoria por el experto y agrega el user_id automaticamente
+Route::put('/actualizarA/{id}', [InfoAsesoriaController::class, 'actualizarAse']); //Actualizar una asesoria por el experto y agrega el user_id automaticamente
+Route::get('asesorias', [InfoAsesoriaController::class, 'getAsesorias']); //Me trae las asesorias de cada instructor para el admin o experto
+Route::delete('/asesorias/{id}', [InfoAsesoriaController::class, 'desactivarAsesoria']); //Me desactiva la asesoria por id
+
 });
 
+//Rutas publicas que no requieren estar autenticado
+Route::post('login', [AuthController::class, 'startLogin']); //Iniciar sesion
+Route::post('register', [AuthController::class, 'formRegister']); //Registrar usuario
 
-//Routes for user
-Route::post('login',[AuthController::class, 'startLogin']); //Iniciar sesion
-Route::post('register',[AuthController::class, 'formRegister']); //Registrar usuario
-Route::put('/actualizar/{id}',[AuthController::class, 'update']); //Actualizar usuario
-Route::get('/users/{id}',[AuthController::class, 'getUserById']); //Traer usuario por id
-Route::get('users',[AuthController::class, 'getAllUsers']); //Traer todos los usuarios sin ninguna condicion
-Route::delete('/users/{id}',[AuthController::class, 'deleteUserById']); //Borrar usuario por Id de la DB
-
-Route::delete('/activaruser/{id}',[AuthController::class, 'activarUserById']); //Activar usuario por Id de la DB, cambiar a 1
-Route::delete('/desactivaruser/{id}',[AuthController::class, 'desactivarUserById']); //Desactivar usuario por Id de la DB, cambiar a 0
-
-Route::delete('activarusers',[AuthController::class, 'activarAllUsers']); //Activar todos los usuarios por Id de la DB sin importar rol, cambiar a 1
-Route::delete('desactivarusers',[AuthController::class, 'desactivarAllUsers']); //Desactivar todos los usuarios por Id de la DB sin importar rol, cambiar a 0
-
-Route::delete('desactivaradmins',[AuthController::class, 'desactivarAdmins']); //Desactivar todos los admins, cambiar active a 0
-Route::delete('desactivarexperts',[AuthController::class, 'desactivarExperts']); //Desactivar todos los expertos, cambiar active a 0
-Route::delete('desactivarstudents',[AuthController::class, 'desactivarStudents']); //Desactivar todos los estudiantes, cambiar active a 0
-
-Route::delete('activaradmins',[AuthController::class, 'activarAdmins']); //Activar todos los admins, cambiar active a 1
-Route::delete('activarexperts',[AuthController::class, 'activarExperts']); //Activar todos los expertos, cambiar active a 1
-Route::delete('activarstudents',[AuthController::class, 'activarStudents']); //Activar todos los estudiantes, cambiar active a 1
-
-
-Route::post('registerAdmin',[AuthController::class, 'addAdmin']); //Registrar admin sin necesidad de poner su rol_id
-Route::post('registerExpert',[AuthController::class, 'addExpert']); //Registrar experto sin necesidad de poner su rol_id
-Route::post('registerStudent',[AuthController::class, 'addStudent']); //Registrar estudiante sin necesidad de poner su rol_id
-Route::get('admins',[AuthController::class, 'getAllAdmins']); //Traer todos los admins que esten activos
-Route::get('experts',[AuthController::class, 'getAllExperts']); //Traer todos los expertos que esten activos
-Route::get('students',[AuthController::class, 'getAllStudents']); //Traer todos los estudiantes que esten activos
 

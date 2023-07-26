@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\User;
 
 
@@ -375,7 +376,15 @@ class AuthController extends Controller
     }
 
 
+    //Cerrar sesion
 
+    public function endLogin(){
+        auth()->user()->tokens()->delete();
+        return response()->json([
+            'status' => true,
+            'message' => 'User logged out successfully'
+        ], 200);
+    }
 
     //Crear un administrador y que agregue su rol por defecto
     public function addAdmin(Request $request)

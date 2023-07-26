@@ -5,9 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class InfoAsesoria extends Model
+class Infoasesoria extends Model
 {
     use HasFactory;
+
     protected $fillable = ['nombre', 'desc','precio','active','user_id'];
 
 
@@ -15,5 +16,4 @@ class InfoAsesoria extends Model
     {
         return $this->belongsTo(User::class);
     }
-
 }

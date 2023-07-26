@@ -68,13 +68,18 @@ class User extends Authenticatable
     //Hay una relacion de uno a muchas para las asesorias
     public function addAsesoria()
     {
-        return $this->hasMany(InfoAsesoria::class);
+        return $this->hasMany(Infoasesoria::class);
     }
 
-     //Hay una relacion de uno a muchas para las registros a las asesorias
-     public function addRegistro()
-     {
-         return $this->hasMany(Registro::class);
-     }
-     
+    //Hay una relacion de uno a muchas para las registros a las asesorias
+    public function addRegistro()
+    {
+        return $this->hasMany(Registro::class);
+    }
+
+    //Nos dice si ya respondio o no el formulario de credencial
+    public function haRespondidoFormulario()
+    {
+        return $this->tramite !== null;
+    }
 }
