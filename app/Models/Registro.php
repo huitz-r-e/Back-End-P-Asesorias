@@ -16,4 +16,10 @@ class Registro extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function infoasesoria()
+{
+    return $this->belongsTo(InfoAsesoria::class, 'infoa_id');
+}
+
+
 }

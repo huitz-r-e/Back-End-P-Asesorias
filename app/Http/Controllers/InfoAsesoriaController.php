@@ -3,12 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Models\Infoasesoria;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 
 class InfoAsesoriaController extends Controller
 {
+    public function __construct(){
+        $this->middleware('auth');
+
+    }
 
 
     //Actualizar asesoria
@@ -137,10 +142,10 @@ class InfoAsesoriaController extends Controller
         // Verificar el rol del usuario
         if ($user->rol_id === 1 || $user->rol_id === 3) {
             // Si el rol_id es igual a 1 o 3 (rol de administrador y estudiante), se muestran todas las asesorías que tengan active=1
-            $asesorias = InfoAsesoria::where('active', 1)->get();
+            $asesorias = InfoAsesoria::with('user')->where('active', 1)->get();
         } else if ($user->rol_id === 2) {
             // Si el rol_id es igual a 2 (rol de usuario normal), se muestran solo las asesorías del usuario que tengan active=1
-            $asesorias = InfoAsesoria::where('user_id', $user->id)->where('active', 1)->get();
+            $asesorias = InfoAsesoria::with('user')->where('user_id', $user->id)->where('active', 1)->get();
         } else {
             // Otros roles que no sean 1 o 2 no tienen acceso a esta función
             return response()->json(['error' => 'No autorizado'], 403);
@@ -148,6 +153,7 @@ class InfoAsesoriaController extends Controller
 
         return response()->json(['asesorias' => $asesorias], 200);
     }
+
 
 
     //Desactivar asesorias
@@ -180,50 +186,5 @@ class InfoAsesoriaController extends Controller
         $asesoria->save();
 
         return response()->json(['message' => 'Asesoría desactivada exitosamente'], 200);
-    }
-
-
-
-
-
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

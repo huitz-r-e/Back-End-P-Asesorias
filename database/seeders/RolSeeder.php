@@ -21,12 +21,12 @@ class RolSeeder extends Seeder
 
         $rol2 = new Role();
         $rol2->rol="EXPERTO";
-        $rol2->descripcion="Revisa y aprueba los voucher de pago";
+        $rol2->descripcion="Registra asesorias y ve sus estudiantes registrados a sus cursos";
         $rol2->save();
 
         $rol3 = new Role();
         $rol3->rol="ESTUDIANTE";
-        $rol3->descripcion="Solicita el tramide de la credencial";
+        $rol3->descripcion="Solicita la asesoria";
         $rol3->save(); 
     }
 }

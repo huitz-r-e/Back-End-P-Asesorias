@@ -19,8 +19,6 @@ return new class extends Migration
             $table->tinyInteger('active')->default(1);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->unsignedBigInteger('statuscv_id')->default(12);
-            $table->foreign('statuscv_id')->references('id')->on('infostatus');
             $table->timestamps();
         });
     }

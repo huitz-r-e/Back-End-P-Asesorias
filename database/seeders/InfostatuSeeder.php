@@ -20,7 +20,7 @@ class InfostatuSeeder extends Seeder
 
         $status2 = new Infostatu();
         $status2->estado='GRADUADO';
-        $status2->descripcion='El becario ha terminado sus estudios universitarios.';
+        $status2->descripcion='El estudiante ha terminado sus estudios universitarios.';
         $status2->save();
 
         $status3 = new Infostatu();
@@ -30,12 +30,12 @@ class InfostatuSeeder extends Seeder
 
         $status4 = new Infostatu();
         $status4->estado='BAJA DEFINITIVA';
-        $status4->descripcion='Se ha dado de baja para siempre al becario.';
+        $status4->descripcion='Se ha dado de baja para siempre al estudiante.';
         $status4->save();
 
         $status5 = new Infostatu();
         $status5->estado='TITULADO';
-        $status5->descripcion='El becario se ha titulado en su universidad.';
+        $status5->descripcion='El estudiante se ha titulado en su universidad.';
         $status5->save();
 
         $status6 = new Infostatu();
@@ -75,22 +75,22 @@ class InfostatuSeeder extends Seeder
 
         $status13 = new Infostatu();
         $status13->estado='REVISADO';
-        $status13->descripcion='La información de solicitud de beca ha sido analizada.';
+        $status13->descripcion='La información de solicitud ha sido analizada.';
         $status13->save();
 
         $status14 = new Infostatu();
         $status14->estado='FINALIZADO';
-        $status14->descripcion='El proceso de postulación a beca ha concluido.';
+        $status14->descripcion='El proceso de postulación ha concluido.';
         $status14->save();
 
         $status15 = new Infostatu();
-        $status15->estado='APROBADA';
-        $status15->descripcion='La beca ha sido aprobada por cubrir el perfil.';
+        $status15->estado='APROBADO';
+        $status15->descripcion='El cv ha sido aprobado por cubrir el perfil.';
         $status15->save();
 
         $status16 = new Infostatu();
-        $status16->estado='RECHAZADA';
-        $status16->descripcion='La beca ha sido rechazada por no cubrir el perfil.';
+        $status16->estado='RECHAZADO';
+        $status16->descripcion='El cv ha sido rechazado por no cubrir el perfil.';
         $status16->save();
     }
 }

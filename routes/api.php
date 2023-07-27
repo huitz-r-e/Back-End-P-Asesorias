@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\InfoAsesoriaController;
+use App\Http\Controllers\RegistroController;
 use App\Models\InfoAsesoria;
 
 /*
@@ -60,6 +61,13 @@ Route::post('registrarA', [InfoAsesoriaController::class, 'agregarAse']); //Regi
 Route::put('/actualizarA/{id}', [InfoAsesoriaController::class, 'actualizarAse']); //Actualizar una asesoria por el experto y agrega el user_id automaticamente
 Route::get('asesorias', [InfoAsesoriaController::class, 'getAsesorias']); //Me trae las asesorias de cada instructor para el admin o experto
 Route::delete('/asesorias/{id}', [InfoAsesoriaController::class, 'desactivarAsesoria']); //Me desactiva la asesoria por id
+
+
+//Rutas para el estudiante
+Route::post('pedirAsesoria', [RegistroController::class, 'altaAsesoria']); //Pedir asesoria
+Route::get('verAsesorias', [RegistroController::class, 'getRegistros']); //Trae info de asesoria
+Route::put('/actualizarAsesoria/{id}', [RegistroController::class, 'actualizarAsesoria']); //Actualizar info de asesoria
+Route::delete('/eliminarAsesoria/{id}', [RegistroController::class, 'eliminarAsesoria']); //Actualizar info de asesoria
 
 });
 

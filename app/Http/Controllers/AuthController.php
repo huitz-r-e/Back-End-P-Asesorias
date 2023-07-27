@@ -13,6 +13,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
+    
     //Crear usuario pidiendo su rol
     public function formRegister(Request $request)
     {
