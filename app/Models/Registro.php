@@ -17,9 +17,7 @@ class Registro extends Model
     }
 
     public function infoasesoria()
-{
-    return $this->belongsTo(InfoAsesoria::class, 'infoa_id');
-}
-
-
+    {
+        return $this->belongsTo(InfoAsesoria::class, 'infoa_id');
+    }
 }

@@ -9,3 +9,5 @@ npm install para que installe todos los paquetes y revisar el archivo .gitignore
 
 php artisan migrate
 php artisan migrate:refresh --seed
+
+php artisan link:storage //Este comando es para activar el almacenamiento(storage) de laravel

@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class InfoAsesoriaController extends Controller
 {
-    public function __construct(){
+    public function __construct()
+    {
         $this->middleware('auth');
-
     }
 
 
@@ -61,34 +61,6 @@ class InfoAsesoriaController extends Controller
         return response()->json(['asesoria' => $asesoria], 200);
     }
 
-
-
-
-    public function addAsesoria(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nombre' => 'required|string|max:100',
-            'desc' => 'required|string|max:200',
-            'precio' => 'required|numeric|regex:/^\d{1,4}(\.\d{1,2})?$/|max:9999.99',
-            'user_id' => 'required'
-
-
-
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $user = InfoAsesoria::create([
-            'nombre' => $request->nombre,
-            'desc' => $request->desc,
-            'precio' => $request->precio,
-            'user_id' => $request->user_id,
-        ]);
-
-        return response()->json(['user' => $user], 201);
-    }
 
 
     //Agregar asesoria
