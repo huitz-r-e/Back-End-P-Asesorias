@@ -47,18 +47,27 @@ class AuthController extends Controller
         return response()->json(['user' => $user], 201);
     }
 
+     //Actualizar usuario que este autenticado
+     public function update(Request $request)
+     {
+         // Validar que el usuario esté autenticado antes de continuar
+         if (!Auth::check()) {
+             return response()->json(['error' => 'No autorizado'], 401);
+         }
+ 
+         // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+         $user = Auth::user();
+ 
+         // Verificar que el usuario tenga el rol_id igual a 1 (rol de usuario normal)
+         if ($user->rol_id !== 1 && $user->rol_id !== 2 && $user->rol_id !== 3 ) {
+             return response()->json(['error' => 'No autorizado'], 403);
+         }
 
-    //Actualizar usuario
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
+         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'lastname' => 'required|string|max:200',
             'mat' => 'required|string|max:10',
-            'rol_id' => 'required',
-            'edad' => 'required',
-            'sexo' => 'required',
-            'email' => 'required|string|email|unique:users,email,' . $id,
+            'email' => 'required|string|email|unique:users,email,' . $user->id,
             'password' => 'nullable|string|min:8' // La contraseña es opcional en la actualización
         ]);
 
@@ -66,25 +75,20 @@ class AuthController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $user = User::find($id);
-
-        if (!$user) {
-            return response()->json(['error' => 'Usuario no encontrado'], 404);
-        }
-
         $user->update([
             'name' => $request->name,
+            'id' => $user->id, // Asignamos el ID del usuario autenticado al campo id de forma automatica
             'lastname' => $request->lastname,
-            'edad' => $request->edad,
-            'sexo' => $request->sexo,
             'mat' => $request->mat,
-            'rol_id' => $request->rol_id,
             'email' => $request->email,
             'password' => $request->password ? bcrypt($request->password) : $user->password // Actualiza la contraseña solo si se proporciona
         ]);
 
         return response()->json(['user' => $user], 200);
-    }
+ 
+         
+     }
+ 
 
     //Me trae un usuario por id
     public function getUserById($id)

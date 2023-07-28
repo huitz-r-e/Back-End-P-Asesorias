@@ -29,7 +29,7 @@ use App\Models\InfoAsesoria;
 Route::middleware(['auth:sanctum'])->group(function() {
     //Routes for user
 Route::get('logout', [AuthController::class, 'endLogin']); //Cerrar sesion
-Route::put('/actualizar/{id}', [AuthController::class, 'update']); //Actualizar usuario
+Route::put('actualizar', [AuthController::class, 'update']); //Actualizar usuario autenticado donde su id se agrega automaticamente
 Route::get('/users/{id}', [AuthController::class, 'getUserById']); //Traer usuario por id
 Route::get('users', [AuthController::class, 'getAllUsers']); //Traer todos los usuarios sin ninguna condicion
 Route::delete('/users/{id}', [AuthController::class, 'deleteUserById']); //Borrar usuario por Id de la DB
