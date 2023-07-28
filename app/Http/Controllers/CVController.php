@@ -124,7 +124,7 @@ class CVController extends Controller
         return response()->json(['message' => 'CV eliminado correctamente'], 200);
     }
 
-    //Traer los cvs para los admins
+    //Traer los cvs para los admins en PROCESO
     public function getCvs()
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -140,7 +140,67 @@ class CVController extends Controller
         }
 
         // Buscar los CV existentes y cargar la relación con el usuario
-        $cvs = Cv::with(['user', 'status'])->get();
+        $cvs = Cv::with(['user', 'status'])
+        ->where('statuscv_id', 12)
+        ->get();
+
+        // Verificar que existan CVs
+        if ($cvs->isEmpty()) {
+            return response()->json(['error' => 'No hay ningún registro de CV'], 404);
+        }
+
+        return response()->json(['cvs' => $cvs], 200);
+    }
+
+
+    //Traer los cvs para los admins en APROBADOS
+    public function getCvsAprobados()
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        if ($user->rol_id !== 1) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Buscar los CV existentes y cargar la relación con el usuario
+        $cvs = Cv::with(['user', 'status'])
+        ->where('statuscv_id', 15)
+        ->get();
+
+        // Verificar que existan CVs
+        if ($cvs->isEmpty()) {
+            return response()->json(['error' => 'No hay ningún registro de CV'], 404);
+        }
+
+        return response()->json(['cvs' => $cvs], 200);
+    }
+
+
+    //Traer los cvs para los admins RECHAZADOS
+    public function getCvsRechazados()
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        if ($user->rol_id !== 1) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Buscar los CV existentes y cargar la relación con el usuario
+        $cvs = Cv::with(['user', 'status'])
+        ->where('statuscv_id', 16)
+        ->get();
 
         // Verificar que existan CVs
         if ($cvs->isEmpty()) {
