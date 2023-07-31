@@ -71,7 +71,8 @@ Route::delete('/eliminarAsesoria/{id}', [RegistroController::class, 'eliminarAse
 
 //Rutas para el CV
 Route::post('subirCv', [CVController::class, 'agregarCv']); //Subir Cv
-Route::put('/actualizarCv/{id}', [CVController::class, 'actualizarCv']); //Actualizar Cv
+Route::put('/aprobarCv/{id}', [CVController::class, 'actualizarCv']); //Aprobar Cv
+Route::put('/rechazarCv/{id}', [CVController::class, 'rechazarCv']); //Rechazar Cv
 Route::delete('/eliminarCv/{id}', [CVController::class, 'eliminarCv']); //Eliminar Cv
 Route::get('cvsProceso', [CVController::class, 'getCvs']); //Traer Cvs para el admin en PROCESO
 Route::get('cvsAprobados', [CVController::class, 'getCvsAprobados']); //Traer Cvs para el admin en APROBADOS

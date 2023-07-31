@@ -56,7 +56,7 @@ class CVController extends Controller
     }
 
 
-    //Actualizar cv
+    //Aprobar cv
     public function actualizarCv($cvId)
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -82,6 +82,37 @@ class CVController extends Controller
 
         // Actualizar el campo statuscv_id con el nuevo valor (15)
         $cv->statuscv_id = 15;
+        $cv->save();
+
+        return response()->json(['message' => 'CV actualizado correctamente'], 200);
+    }
+
+    //Rechazar cv
+    public function rechazarCv($cvId)
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar que el usuario tenga el rol_id igual a 1 (rol de usuario normal)
+        if ($user->rol_id !== 1) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Buscar el CV existente por su ID
+        $cv = Cv::find($cvId);
+
+        // Verificar si el CV existe
+        if (!$cv) {
+            return response()->json(['error' => 'CV no encontrado en DB'], 404);
+        }
+
+        // Actualizar el campo statuscv_id con el nuevo valor (15)
+        $cv->statuscv_id = 16;
         $cv->save();
 
         return response()->json(['message' => 'CV actualizado correctamente'], 200);
