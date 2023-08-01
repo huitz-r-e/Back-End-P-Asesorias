@@ -16,36 +16,46 @@ class RegistroController extends Controller
     }
 
     public function altaAsesoria(Request $request)
-    {
-        // Validar que el usuario esté autenticado antes de continuar
-        if (!Auth::check()) {
-            return response()->json(['error' => 'No autorizado'], 401);
-        }
-
-        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
-        $user = Auth::user();
-
-        // Verificar que el usuario tenga el rol_id igual a 3 (rol de usuario normal)
-        if ($user->rol_id !== 3) {
-            return response()->json(['error' => 'No autorizado'], 403);
-        }
-
-        $validator = Validator::make($request->all(), [
-            'infoa_id' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        // Crear la asesoría con el user_id del usuario autenticado
-        $asesoria = Registro::create([
-            'user_id' => $user->id, // Asignamos el ID del usuario autenticado al campo user_id
-            'infoa_id' => $request->infoa_id,
-        ]);
-
-        return response()->json(['asesoria' => $asesoria], 201);
+{
+    // Validar que el usuario esté autenticado antes de continuar
+    if (!Auth::check()) {
+        return response()->json(['error' => 'No autorizado'], 401);
     }
+
+    // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+    $user = Auth::user();
+
+    // Verificar que el usuario tenga el rol_id igual a 3 (rol de usuario normal)
+    if ($user->rol_id !== 3) {
+        return response()->json(['error' => 'No autorizado'], 403);
+    }
+
+    $validator = Validator::make($request->all(), [
+        'infoa_id' => 'required',
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+
+    // Verificar si el usuario ya tiene una asesoría con la misma infoa_id
+    $existingAsesoria = Registro::where('user_id', $user->id)
+        ->where('infoa_id', $request->infoa_id)
+        ->first();
+
+    if ($existingAsesoria) {
+        return response()->json(['error' => 'Ya tienes una asesoría registrada con esta infoa_id'], 400);
+    }
+
+    // Crear la asesoría con el user_id del usuario autenticado
+    $asesoria = Registro::create([
+        'user_id' => $user->id, // Asignamos el ID del usuario autenticado al campo user_id
+        'infoa_id' => $request->infoa_id,
+    ]);
+
+    return response()->json(['asesoria' => $asesoria], 201);
+}
+
 
 
     //Me trae los registros
