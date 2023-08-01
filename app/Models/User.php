@@ -51,7 +51,7 @@ class User extends Authenticatable
 
 
     //Hay una relacion de uno a uno para los Cvs
-    public function addCv()
+    public function cv()
     {
         return $this->hasOne(Cv::class);
     }

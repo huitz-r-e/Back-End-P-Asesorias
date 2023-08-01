@@ -19,7 +19,9 @@ class CVController extends Controller
         $this->middleware('auth');
     }
 
-    //Agregar asesoria
+    //Agregar cv
+
+
     public function agregarCv(Request $request)
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -35,6 +37,11 @@ class CVController extends Controller
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
+        // Verificar si el usuario ya tiene un CV asociado
+        if ($user->cv) {
+            return response()->json(['error' => 'Ya ha subido un CV anteriormente'], 422);
+        }
+
         $validator = Validator::make($request->all(), [
             'razon' => 'required|string|max:200',
             'rutaCv' => 'required|mimes:pdf|max:2048'
@@ -44,16 +51,17 @@ class CVController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Subir el cv con el user_id del usuario autenticado
+        // Subir el CV con el user_id del usuario autenticado
         $rutaArchivo = $request->file('rutaCv')->store('public/pdf');
         $micv = Cv::create([
             'razon' => $request->razon,
             'user_id' => $user->id,
-            'rutaCv' => $rutaArchivo // Use 'rutaCv' instead of 'rutaPdfVoucherE'
+            'rutaCv' => $rutaArchivo
         ]);
 
         return response()->json(['cv' => $micv], 201);
     }
+
 
 
     //Aprobar cv
@@ -172,8 +180,8 @@ class CVController extends Controller
 
         // Buscar los CV existentes y cargar la relación con el usuario
         $cvs = Cv::with(['user', 'status'])
-        ->where('statuscv_id', 12)
-        ->get();
+            ->where('statuscv_id', 12)
+            ->get();
 
         // Verificar que existan CVs
         if ($cvs->isEmpty()) {
@@ -201,8 +209,8 @@ class CVController extends Controller
 
         // Buscar los CV existentes y cargar la relación con el usuario
         $cvs = Cv::with(['user', 'status'])
-        ->where('statuscv_id', 15)
-        ->get();
+            ->where('statuscv_id', 15)
+            ->get();
 
         // Verificar que existan CVs
         if ($cvs->isEmpty()) {
@@ -230,8 +238,8 @@ class CVController extends Controller
 
         // Buscar los CV existentes y cargar la relación con el usuario
         $cvs = Cv::with(['user', 'status'])
-        ->where('statuscv_id', 16)
-        ->get();
+            ->where('statuscv_id', 16)
+            ->get();
 
         // Verificar que existan CVs
         if ($cvs->isEmpty()) {
