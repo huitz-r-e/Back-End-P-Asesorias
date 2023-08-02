@@ -77,6 +77,7 @@ Route::delete('/eliminarCv/{id}', [CVController::class, 'eliminarCv']); //Elimin
 Route::get('cvsProceso', [CVController::class, 'getCvs']); //Traer Cvs para el admin en PROCESO
 Route::get('cvsAprobados', [CVController::class, 'getCvsAprobados']); //Traer Cvs para el admin en APROBADOS
 Route::get('cvsRechazados', [CVController::class, 'getCvsRechazados']); //Traer Cvs para el admin en RECHAZADOS
+Route::get('infocv', [CVController::class, 'getCvUsuarioActual']); //Trae info de CV del experto que haya iniciado sesion
 
 
 });

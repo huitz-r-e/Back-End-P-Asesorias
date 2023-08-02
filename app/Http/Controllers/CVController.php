@@ -248,4 +248,35 @@ class CVController extends Controller
 
         return response()->json(['cvs' => $cvs], 200);
     }
+
+
+    //Me trae los datos del cv del experto
+    public function getCvUsuarioActual()
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar que el usuario tenga el rol_id igual a 2 (rol de usuario normal)
+        if ($user->rol_id !== 2) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Obtener el CV del usuario autenticado si existe, y cargar la información de las relaciones status y user
+        $cv = $user->cv;
+        if ($cv) {
+            $cv->load('status', 'user');
+        }
+
+        // Verificar que exista el CV del usuario
+        if (!$cv) {
+            return response()->json(['error' => 'No hay ningún registro de CV para el usuario actual'], 404);
+        }
+
+        return response()->json(['cv' => $cv], 200);
+    }
 }
