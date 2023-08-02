@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Infoasesoria;
 use App\Models\User;
+use App\Models\Cv;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -77,6 +78,15 @@ class InfoAsesoriaController extends Controller
         // Verificar que el usuario tenga el rol_id igual a 2 (rol de usuario normal)
         if ($user->rol_id !== 2) {
             return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Verificar que el usuario tenga un registro en la tabla cvs con statuscv_id igual a 15
+        $cv = Cv::where('user_id', $user->id)
+            ->where('statuscv_id', 15)
+            ->first();
+
+        if (!$cv) {
+            return response()->json(['error' => 'No cumple con los requisitos para registrar asesorías'], 403);
         }
 
         $validator = Validator::make($request->all(), [
