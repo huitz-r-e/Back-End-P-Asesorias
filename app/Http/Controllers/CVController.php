@@ -250,7 +250,37 @@ class CVController extends Controller
     }
 
 
-    //Me trae los datos del cv del experto
+    //Me trae los datos del cv del experto y su ruta pdf pero larga
+    // public function getCvUsuarioActual()
+    // {
+    //     // Validar que el usuario esté autenticado antes de continuar
+    //     if (!Auth::check()) {
+    //         return response()->json(['error' => 'No autorizado'], 401);
+    //     }
+
+    //     // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+    //     $user = Auth::user();
+
+    //     // Verificar que el usuario tenga el rol_id igual a 2 (rol de usuario normal)
+    //     if ($user->rol_id !== 2) {
+    //         return response()->json(['error' => 'No autorizado'], 403);
+    //     }
+
+    //     // Obtener el CV del usuario autenticado si existe, y cargar la información de las relaciones status y user
+    //     $cv = $user->cv;
+    //     if ($cv) {
+    //         $cv->load('status', 'user');
+    //     }
+
+    //     // Verificar que exista el CV del usuario
+    //     if (!$cv) {
+    //         return response()->json(['error' => 'No hay ningún registro de CV para el usuario actual'], 404);
+    //     }
+
+    //     return response()->json(['cv' => $cv], 200);
+    // }
+
+    //Me trae los datos del cv del usuario y me recorta la ruta de ocalhost:8000/storage/pdf/oiYkDdSlEeKk3qZmTzVTNcGN4JItwqwaxi3tO5zx.pdf a solo: oiYkDdSlEeKk3qZmTzVTNcGN4JItwqwaxi3tO5zx.pdf 
     public function getCvUsuarioActual()
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -270,6 +300,8 @@ class CVController extends Controller
         $cv = $user->cv;
         if ($cv) {
             $cv->load('status', 'user');
+            // Obtener solo el nombre del archivo PDF y asignarlo a una propiedad separada
+            $cv->pdf_filename = basename($cv->rutaCv);
         }
 
         // Verificar que exista el CV del usuario
@@ -277,6 +309,7 @@ class CVController extends Controller
             return response()->json(['error' => 'No hay ningún registro de CV para el usuario actual'], 404);
         }
 
+        // Retornar todos los datos del CV junto con el nombre del archivo PDF, sin la parte "public/pdf/"
         return response()->json(['cv' => $cv], 200);
     }
 }
