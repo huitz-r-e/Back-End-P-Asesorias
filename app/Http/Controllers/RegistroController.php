@@ -14,8 +14,8 @@ class RegistroController extends Controller
     {
         $this->middleware('auth');
     }
-
-    public function altaAsesoria(Request $request)
+    //Darse de alta a una asesoria por el estudiante pero de manera manual
+    public function altaAsesoriaPeso(Request $request)
     {
         // Validar que el usuario esté autenticado antes de continuar
         if (!Auth::check()) {
@@ -45,7 +45,7 @@ class RegistroController extends Controller
 
         if ($existingAsesoria) {
             return response()->json(['error' => 'Ya tienes una asesoría registrada con esta infoa_id'], 400);
-        }else{
+        } else {
             return response()->json(['error' => 'Esa asesoria no existe en la DB'], 404);
         }
 
@@ -58,8 +58,50 @@ class RegistroController extends Controller
         return response()->json(['asesoria' => $asesoria], 201);
     }
 
-    //Darse de alta a una asesoria por id
-   
+    //Estudiante se da de alta a una asesoria por medio del id en la URL
+    public function altaAsesoria(Request $request, $id)
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar que el usuario tenga el rol_id igual a 3 (rol de usuario normal)
+        if ($user->rol_id !== 3) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        // Verificar si el usuario ya tiene una asesoría con el mismo id
+        $existingAsesoria = Registro::where('user_id', $user->id)
+            // ->where('id', $id)
+            ->where('infoa_id', $request->id) //Este es el mismo id de la asesoria
+            ->first();
+
+        if ($existingAsesoria) {
+            return response()->json(['error' => 'Ya tienes una asesoría registrada con este id'], 400);
+        }
+
+        // Buscar la asesoría existente por su ID
+        $asesoria = Infoasesoria::find($id);
+
+        // Verificar si se encontró la asesoría
+        if (!$asesoria) {
+            return response()->json(['error' => 'Asesoría no encontrada en la DB'], 404);
+        }
+
+        // Asignar la asesoría al usuario
+        $registro = Registro::create([
+            'user_id' => $user->id,
+            'infoa_id' => $id,
+        ]);
+
+        return response()->json(['registro' => $registro], 201);
+    }
+
+
 
 
 
