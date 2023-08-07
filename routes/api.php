@@ -64,11 +64,12 @@ Route::delete('/asesorias/{id}', [InfoAsesoriaController::class, 'desactivarAses
 
 
 //Rutas para el estudiante y experto
-Route::post('pedirAsesoria', [RegistroController::class, 'altaAsesoria']); //Pedir asesoria
+Route::post('pedirAsesoria', [RegistroController::class, 'altaAsesoria']); //Pedir asesoria por id de asesoria para el estudiante
 Route::get('verAsesorias', [RegistroController::class, 'getRegistros']); //Trae info de asesorias
 Route::get('/verAsesoria/{id}', [RegistroController::class, 'getRegistroById']); //Trae info de asesoria por su id
 Route::put('/actualizarAsesoria/{id}', [RegistroController::class, 'actualizarAsesoria']); //Actualizar info de asesoria
-Route::delete('/eliminarAsesoria/{id}', [RegistroController::class, 'eliminarAsesoria']); //Actualizar info de asesoria
+Route::delete('/eliminarAsesoriaEstudiante/{id}', [RegistroController::class, 'eliminarAsesoria']); //Eliminar registro de estudiante a asesoria
+Route::delete('/eliminarAsesoriaExperto/{id}', [RegistroController::class, 'deleteRegistroById']); //Eliminar asesoria por id de parte del administrador
 
 //Rutas para el CV
 Route::post('subirCv', [CVController::class, 'agregarCv']); //Subir Cv

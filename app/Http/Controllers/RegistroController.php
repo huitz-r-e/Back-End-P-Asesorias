@@ -45,6 +45,8 @@ class RegistroController extends Controller
 
         if ($existingAsesoria) {
             return response()->json(['error' => 'Ya tienes una asesoría registrada con esta infoa_id'], 400);
+        }else{
+            return response()->json(['error' => 'Esa asesoria no existe en la DB'], 404);
         }
 
         // Crear la asesoría con el user_id del usuario autenticado
@@ -55,6 +57,10 @@ class RegistroController extends Controller
 
         return response()->json(['asesoria' => $asesoria], 201);
     }
+
+    //Darse de alta a una asesoria por id
+   
+
 
 
 
@@ -109,30 +115,25 @@ class RegistroController extends Controller
         // Verificar el rol del usuario
         if ($user->rol_id === 2) {
 
-            $asesoria = Infoasesoria::find($id);
+            // Obtener la asesoría por su ID y perteneciente al usuario actual
+            $asesoria = InfoAsesoria::with('user')->where('user_id', $user->id)
+                ->where('active', 1)
+                ->find($id);
+
             if (!$asesoria) {
-                return response()->json(['error' => 'Asesoria no encontrada en la db'], 404);
+                return response()->json(['error' => 'No existe esta asesoria en tus registros'], 404);
             }
 
-            // Si el rol_id es igual a 2 (rol de usuario normal), se muestran solo las asesorías del usuario que tengan active=1
-            $asesoria = InfoAsesoria::with('user')->where('user_id', $user->id)->where('active', 1)->get();
-
-            // Verificar si el arreglo de asesorías está vacío y asignar un arreglo vacío a $registros en ese caso
-            if ($asesoria->isEmpty()) {
-                $registros = [];
-            } else {
-                // Obtener los ids de las asesorías del usuario con rol_id = 2
-                $asesoriaIds = $asesoria->pluck('id')->all();
-                // Obtener los registros del usuario con rol_id = 2 que coincidan con las asesorías obtenidas
-                $registros = Registro::with('user')->whereIn('infoa_id', $asesoriaIds)->get();
-            }
+            // Obtener los registros asociados a la asesoría con el ID proporcionado
+            $registros = Registro::with('user')->where('infoa_id', $asesoria->id)->get();
         } else {
             // Otros roles que no sean 3 o 1 no tienen acceso a esta función
             return response()->json(['error' => 'No autorizado'], 403);
         }
 
-        return response()->json(['asesorias' => $asesoria, 'registros' => $registros], 200);
+        return response()->json(['asesoria' => $asesoria, 'registros' => $registros], 200);
     }
+
 
 
     public function actualizarAsesoria(Request $request, $id)
@@ -206,5 +207,36 @@ class RegistroController extends Controller
         $registro->delete();
 
         return response()->json(['message' => 'Registro eliminado exitosamente'], 200);
+    }
+
+
+    public function deleteRegistroById(Request $request, $id)
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar el rol del usuario
+        if ($user->rol_id === 2) {
+            // Obtener la asesoría o registro por su ID y perteneciente al usuario actual
+            $asesoria = InfoAsesoria::where('user_id', $user->id)
+                ->where('active', 1)
+                ->find($id);
+
+            if (!$asesoria) {
+                return response()->json(['error' => 'No existe esta asesoria o registro en tus registros'], 404);
+            }
+
+            $asesoria->delete();
+
+            return response()->json(['message' => 'Eliminación exitosa'], 200);
+        } else {
+            // Otros roles que no sean 3 o 1 no tienen acceso a esta función
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
     }
 }
