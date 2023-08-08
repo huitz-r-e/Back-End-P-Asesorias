@@ -13,7 +13,7 @@ use App\Models\User;
 
 class AuthController extends Controller
 {
-    
+
     //Crear usuario pidiendo su rol
     public function formRegister(Request $request)
     {
@@ -47,23 +47,58 @@ class AuthController extends Controller
         return response()->json(['user' => $user], 201);
     }
 
-     //Actualizar usuario que este autenticado
-     public function update(Request $request)
-     {
-         // Validar que el usuario esté autenticado antes de continuar
-         if (!Auth::check()) {
-             return response()->json(['error' => 'No autorizado'], 401);
-         }
- 
-         // Obtener el usuario autenticado a partir del token de autorización en la cabecera
-         $user = Auth::user();
- 
-         // Verificar que el usuario tenga el rol_id igual a 1 (rol de usuario normal)
-         if ($user->rol_id !== 1 && $user->rol_id !== 2 && $user->rol_id !== 3 ) {
-             return response()->json(['error' => 'No autorizado'], 403);
-         }
+    //Actualizar usuario por id
+    public function updateById(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:100',
+            'lastname' => 'required|string|max:200',
+            'mat' => 'required|string|max:10',
+            'edad' => 'required',
+            'email' => 'required|string|email|unique:users,email,' . $id,
+            'password' => 'nullable|string|min:8'
+        ]);
 
-         $validator = Validator::make($request->all(), [
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $user = User::find($id);
+
+        if (!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+
+        $user->update([
+            'name' => $request->name,
+            'lastname' => $request->lastname,
+            'edad' => $request->edad,
+            'mat' => $request->mat,
+            'email' => $request->email,
+            'password' => $request->password ? bcrypt($request->password) : $user->password // Actualiza la contraseña solo si se proporciona
+
+        ]);
+
+        return response()->json(['user' => $user], 200);
+    }
+
+    //Actualizar usuario que este autenticado
+    public function update(Request $request)
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar que el usuario tenga el rol_id igual a 1 (rol de usuario normal)
+        if ($user->rol_id !== 1 && $user->rol_id !== 2 && $user->rol_id !== 3) {
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:100',
             'lastname' => 'required|string|max:200',
             'mat' => 'required|string|max:10',
@@ -85,10 +120,8 @@ class AuthController extends Controller
         ]);
 
         return response()->json(['user' => $user], 200);
- 
-         
-     }
- 
+    }
+
 
     //Me trae un usuario por id
     public function getUserById($id)
@@ -353,51 +386,51 @@ class AuthController extends Controller
     }
 
 
-     //Me trae todos los administradores desactivados
-     public function getAllAdminsDesactivados()
-     {
-         $users = User::where('rol_id', 1)
-             ->where(
-                 'active',
-                 0
-             )->get();
-         if ($users->isEmpty()) {
-             return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
-         }
- 
-         return response()->json(['users' => $users], 200);
-     }
- 
-     //Me trae todos los expertos desactivados
-     public function getAllExpertsDesactivados()
-     {
-         $users = User::where('rol_id', 2)
-             ->where(
-                 'active',
-                 0
-             )->get();
-         if ($users->isEmpty()) {
-             return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
-         }
- 
-         return response()->json(['users' => $users], 200);
-     }
- 
- 
-     //Me trae todos los estudiantes desactivados
-     public function getAllStudentsDesactivados()
-     {
-         $users = User::where('rol_id', 3)
-             ->where(
-                 'active',
-                 0
-             )->get();
-         if ($users->isEmpty()) {
-             return response()->json(['message' => 'No hay ningún registro en la DB'], 200);
-         }
- 
-         return response()->json(['users' => $users], 200);
-     }
+    //Me trae todos los administradores desactivados
+    public function getAllAdminsDesactivados()
+    {
+        $users = User::where('rol_id', 1)
+            ->where(
+                'active',
+                0
+            )->get();
+        if ($users->isEmpty()) {
+            return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
+        }
+
+        return response()->json(['users' => $users], 200);
+    }
+
+    //Me trae todos los expertos desactivados
+    public function getAllExpertsDesactivados()
+    {
+        $users = User::where('rol_id', 2)
+            ->where(
+                'active',
+                0
+            )->get();
+        if ($users->isEmpty()) {
+            return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
+        }
+
+        return response()->json(['users' => $users], 200);
+    }
+
+
+    //Me trae todos los estudiantes desactivados
+    public function getAllStudentsDesactivados()
+    {
+        $users = User::where('rol_id', 3)
+            ->where(
+                'active',
+                0
+            )->get();
+        if ($users->isEmpty()) {
+            return response()->json(['message' => 'No hay ningún registro en la DB'], 200);
+        }
+
+        return response()->json(['users' => $users], 200);
+    }
 
 
 
@@ -430,7 +463,8 @@ class AuthController extends Controller
 
     //Cerrar sesion
 
-    public function endLogin(){
+    public function endLogin()
+    {
         auth()->user()->tokens()->delete();
         return response()->json([
             'status' => true,
