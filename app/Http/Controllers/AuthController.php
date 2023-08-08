@@ -306,7 +306,7 @@ class AuthController extends Controller
 
 
 
-    //Me trae todos los administradores
+    //Me trae todos los administradores activos
     public function getAllAdmins()
     {
         $users = User::where('rol_id', 1)
@@ -321,7 +321,7 @@ class AuthController extends Controller
         return response()->json(['users' => $users], 200);
     }
 
-    //Me trae todos los expertos
+    //Me trae todos los expertos activos
     public function getAllExperts()
     {
         $users = User::where('rol_id', 2)
@@ -337,7 +337,7 @@ class AuthController extends Controller
     }
 
 
-    //Me trae todos los estudiantes
+    //Me trae todos los estudiantes activos
     public function getAllStudents()
     {
         $users = User::where('rol_id', 3)
@@ -351,6 +351,53 @@ class AuthController extends Controller
 
         return response()->json(['users' => $users], 200);
     }
+
+
+     //Me trae todos los administradores desactivados
+     public function getAllAdminsDesactivados()
+     {
+         $users = User::where('rol_id', 1)
+             ->where(
+                 'active',
+                 0
+             )->get();
+         if ($users->isEmpty()) {
+             return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
+         }
+ 
+         return response()->json(['users' => $users], 200);
+     }
+ 
+     //Me trae todos los expertos desactivados
+     public function getAllExpertsDesactivados()
+     {
+         $users = User::where('rol_id', 2)
+             ->where(
+                 'active',
+                 0
+             )->get();
+         if ($users->isEmpty()) {
+             return response()->json(['message' => 'No hay ningun registro en la DB'], 200);
+         }
+ 
+         return response()->json(['users' => $users], 200);
+     }
+ 
+ 
+     //Me trae todos los estudiantes desactivados
+     public function getAllStudentsDesactivados()
+     {
+         $users = User::where('rol_id', 3)
+             ->where(
+                 'active',
+                 0
+             )->get();
+         if ($users->isEmpty()) {
+             return response()->json(['message' => 'No hay ningún registro en la DB'], 200);
+         }
+ 
+         return response()->json(['users' => $users], 200);
+     }
 
 
 

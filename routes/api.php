@@ -56,6 +56,11 @@ Route::get('admins', [AuthController::class, 'getAllAdmins']); //Traer todos los
 Route::get('experts', [AuthController::class, 'getAllExperts']); //Traer todos los expertos que esten activos
 Route::get('students', [AuthController::class, 'getAllStudents']); //Traer todos los estudiantes que esten activos
 
+//Usuarios desactivados
+Route::get('adminsdesactivados', [AuthController::class, 'getAllAdminsDesactivados']); //Traer todos los admins que esten desactivados
+Route::get('expertsdesactivados', [AuthController::class, 'getAllExpertsDesactivados']); //Traer todos los expertos que esten desactivados
+Route::get('studentsdesactivados', [AuthController::class, 'getAllStudentsDesactivados']); //Traer todos los estudiantes que esten desactivados
+
 //Rutas de asesorias de parte del experto
 Route::post('registrarA', [InfoAsesoriaController::class, 'agregarAse']); //Registrar una asesoria por el experto y agrega el user_id automaticamente
 Route::put('/actualizarA/{id}', [InfoAsesoriaController::class, 'actualizarAse']); //Actualizar una asesoria por el experto y agrega el user_id automaticamente
