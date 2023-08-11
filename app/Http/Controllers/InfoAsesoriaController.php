@@ -91,8 +91,11 @@ class InfoAsesoriaController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nombre' => 'required|string|max:100',
+            'categoria_id' => 'required',
             'desc' => 'required|string|max:200',
             'precio' => 'required|numeric|regex:/^\d{1,4}(\.\d{1,2})?$/|max:9999.99',
+            'imgcurso' => 'required|image|max:2048',
+
         ]);
 
         if ($validator->fails()) {
@@ -100,11 +103,14 @@ class InfoAsesoriaController extends Controller
         }
 
         // Crear la asesoría con el user_id del usuario autenticado
+        $rutaArchivoImg = $request->file('imgcurso')->store('public/imgscursos');
         $asesoria = InfoAsesoria::create([
             'nombre' => $request->nombre,
+            'categoria_id' => $request->categoria_id,
             'desc' => $request->desc,
             'precio' => $request->precio,
             'user_id' => $user->id, // Asignamos el ID del usuario autenticado al campo user_id
+            'imgcurso' => $rutaArchivoImg
         ]);
 
         return response()->json(['asesoria' => $asesoria], 201);
@@ -121,13 +127,15 @@ class InfoAsesoriaController extends Controller
         // Obtener el usuario autenticado a partir del token de autorización en la cabecera
         $user = Auth::user();
 
-        // Verificar el rol del usuario
         if ($user->rol_id === 1 || $user->rol_id === 3) {
-            // Si el rol_id es igual a 1 o 3 (rol de administrador y estudiante), se muestran todas las asesorías que tengan active=1
-            $asesorias = InfoAsesoria::with('user')->where('active', 1)->get();
+            $asesorias = InfoAsesoria::with(['user', 'categoria']) // Cargar relación 'joinCategorias'
+                ->where('active', 1)
+                ->get();
         } else if ($user->rol_id === 2) {
-            // Si el rol_id es igual a 2 (rol de usuario normal), se muestran solo las asesorías del usuario que tengan active=1
-            $asesorias = InfoAsesoria::with('user')->where('user_id', $user->id)->where('active', 1)->get();
+            $asesorias = InfoAsesoria::with(['user', 'categoria']) // Cargar relación 'joinCategorias'
+                ->where('user_id', $user->id)
+                ->where('active', 1)
+                ->get();
         } else {
             // Otros roles que no sean 1 o 2 no tienen acceso a esta función
             return response()->json(['error' => 'No autorizado'], 403);

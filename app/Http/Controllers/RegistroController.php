@@ -7,6 +7,8 @@ use App\Models\Registro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+
 
 class RegistroController extends Controller
 {
@@ -221,7 +223,7 @@ class RegistroController extends Controller
 
 
 
-
+//Eliminar asesoria solicitada por parte del estudiante
     public function eliminarAsesoria($id)
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -252,6 +254,7 @@ class RegistroController extends Controller
     }
 
 
+    //Eliminar asesoria por parte del experto
     public function deleteRegistroById(Request $request, $id)
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -271,6 +274,10 @@ class RegistroController extends Controller
 
             if (!$asesoria) {
                 return response()->json(['error' => 'No existe esta asesoria o registro en tus registros'], 404);
+            }
+            // Eliminar el archivo IMG asociado al experto, si existe
+            if (Storage::exists($asesoria->imgcurso)) {
+                Storage::delete($asesoria->imgcurso);
             }
 
             $asesoria->delete();

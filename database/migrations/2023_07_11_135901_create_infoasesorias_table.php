@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->string('nombre',50);
             $table->string('desc',100);
+            $table->string('imgcurso');
             $table->decimal('precio', 6, 2); //8888.99
             $table->tinyInteger('active')->default(1);
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('categoria_id');
+            $table->foreign('categoria_id')->references('id')->on('categorias');
             $table->timestamps();
         });
     }

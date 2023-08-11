@@ -9,11 +9,21 @@ class Infoasesoria extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nombre', 'desc','precio','active','user_id'];
+    protected $fillable = ['nombre', 'desc','precio','active','user_id','categoria_id','imgcurso'];
 
 
+    protected $appends = ['img_filename'];
+
+    public function getImgFilenameAttribute()
+    {
+        return basename($this->imgcurso);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function categoria(){
+        return $this->belongsTo(Categoria::class);
     }
 }

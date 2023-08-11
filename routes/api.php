@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CVController;
 use App\Http\Controllers\InfoAsesoriaController;
 use App\Http\Controllers\RegistroController;
+use App\Http\Controllers\CategoriaController;
 use App\Models\InfoAsesoria;
 
 /*
@@ -86,6 +87,12 @@ Route::get('cvsProceso', [CVController::class, 'getCvs']); //Traer Cvs para el a
 Route::get('cvsAprobados', [CVController::class, 'getCvsAprobados']); //Traer Cvs para el admin en APROBADOS
 Route::get('cvsRechazados', [CVController::class, 'getCvsRechazados']); //Traer Cvs para el admin en RECHAZADOS
 Route::get('infocv', [CVController::class, 'getCvUsuarioActual']); //Trae info de CV del experto que haya iniciado sesion
+
+
+//Todo lo que tenga que ver con categorias
+Route::get('categorias', [CategoriaController::class, 'getAllCategorias']); //Traer todas las categorias
+Route::post('registrarcategoria', [CategoriaController::class, 'registrarCategoria']); //Crear una categoria
+Route::delete('/categoria/{id}', [CategoriaController::class, 'deleteCategoryById']); //Eliminar una categoria por id
 
 
 });
