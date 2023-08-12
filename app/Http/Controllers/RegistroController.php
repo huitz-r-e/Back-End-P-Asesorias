@@ -126,7 +126,7 @@ class RegistroController extends Controller
             $registros = [];
         } else if ($user->rol_id === 2) {
             // Si el rol_id es igual a 2 (rol de usuario normal), se muestran solo las asesorías del usuario que tengan active=1
-            $asesorias = InfoAsesoria::with('user')->where('user_id', $user->id)->where('active', 1)->get();
+            $asesorias = InfoAsesoria::with('user','categoria')->where('user_id', $user->id)->where('active', 1)->get();
 
             // Verificar si el arreglo de asesorías está vacío y asignar un arreglo vacío a $registros en ese caso
             if ($asesorias->isEmpty()) {
