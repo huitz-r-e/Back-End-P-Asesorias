@@ -71,6 +71,11 @@ class User extends Authenticatable
         return $this->hasMany(Infoasesoria::class);
     }
 
+    public function addCita()
+    {
+        return $this->hasMany(Reunion::class);
+    }
+
     //Hay una relacion de uno a muchas para las registros a las asesorias
     public function addRegistro()
     {
@@ -82,5 +87,4 @@ class User extends Authenticatable
     {
         return $this->tramite !== null;
     }
-
 }

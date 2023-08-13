@@ -7,6 +7,7 @@ use App\Http\Controllers\CVController;
 use App\Http\Controllers\InfoAsesoriaController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\ReunionController;
 use App\Models\InfoAsesoria;
 
 /*
@@ -95,6 +96,9 @@ Route::get('categorias', [CategoriaController::class, 'getAllCategorias']); //Tr
 Route::post('registrarcategoria', [CategoriaController::class, 'registrarCategoria']); //Crear una categoria
 Route::delete('/categoria/{id}', [CategoriaController::class, 'deleteCategoryById']); //Eliminar una categoria por id
 
+//Todo lo que tenga que ver con reuniones entre experto y estudiante
+Route::post('/registrarcita/{id}', [ReunionController::class, 'agregarCitaPorId']); //Crear una cita para el estudiante, dada por el experto por medio del id del registro
+Route::put('/confirmarcita/{id}', [ReunionController::class, 'confirmarCitaPorId']); //Confirmar cita por parte del estudiante por id
 
 });
 
