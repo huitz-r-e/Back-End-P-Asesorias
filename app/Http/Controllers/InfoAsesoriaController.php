@@ -177,4 +177,11 @@ class InfoAsesoriaController extends Controller
 
         return response()->json(['message' => 'Asesoría desactivada exitosamente'], 200);
     }
+
+    //Traer cursos por su categoria id
+    public function cursosPorCategoria($categoria_id) {
+        $asesorias = InfoAsesoria::where('categoria_id', $categoria_id)->get();
+        return response()->json(['asesorias' => $asesorias]);
+    }
+    
 }
