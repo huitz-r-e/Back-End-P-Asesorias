@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Reunion extends Model
 {
     use HasFactory;
-    protected $fillable = ['expert_id', 'registro_id','urlmeet','confirmacion', 'tema','fecha'];
+    protected $fillable = ['expert_id', 'registro_id', 'urlmeet', 'confirmacion', 'tema', 'fecha'];
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    public function registro()
+    {
+        return $this->belongsTo(Registro::class, 'registro_id');
     }
 
 }

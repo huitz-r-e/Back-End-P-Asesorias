@@ -73,69 +73,72 @@ class ReunionController extends Controller
         if ($user->rol_id !== 3) {
             return response()->json(['error' => 'No autorizado'], 403);
         }
-         // Verificar si el registro existe en la base de datos
-         $micita = Reunion::find($registro_id);
+        // Verificar si el registro existe en la base de datos
+        $micita = Reunion::find($registro_id);
 
-         if (!$micita) {
-             return response()->json(['error' => 'No existe el id en la BD'], 404);
-         }
+        if (!$micita) {
+            return response()->json(['error' => 'No existe el id en la BD'], 404);
+        }
         // Actualizar el campo 'confirmacion' en el registro
         $micita->update([
             'confirmacion' => true,
         ]);
-        
+
 
         // return response()->json(['data' => $micita], 201);
         return response()->json(['message' => 'Confirmación actualizada correctamente'], 200);
-
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    //Traer todas las reuniones para experto autenticado
+    public function obtenerTodasLasReuniones(Request $request)
     {
-        //
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar el rol del usuario
+        if ($user->rol_id === 2) {
+            // Obtener todas las reuniones donde el expert_id coincida con el id del usuario autenticado
+            $citas = Reunion::with('registro')->where('expert_id', $user->id)->get();
+        } else {
+            // Otros roles que no sean 3 o 1 no tienen acceso a esta función
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+
+        return response()->json($citas, 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+    //Traer reuniones para estudiante autenticado
+    public function obtenerCitasEstudiante(Request $request)
+{
+    // Validar que el usuario esté autenticado antes de continuar
+    if (!Auth::check()) {
+        return response()->json(['error' => 'No autorizado'], 401);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
+    // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+    $user = Auth::user();
+
+    // Verificar el rol del usuario
+    if ($user->rol_id === 3) {
+        // Obtener todas las reuniones relacionadas con el usuario autenticado
+        $citas = Reunion::with(['registro' => function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        }])
+        ->whereHas('registro', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->get();
+    } else {
+        // Otros roles que no sean 3 o 1 no tienen acceso a esta función
+        return response()->json(['error' => 'No autorizado'], 403);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+    return response()->json($citas, 200);
+}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

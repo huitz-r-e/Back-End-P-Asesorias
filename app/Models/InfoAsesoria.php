@@ -26,4 +26,9 @@ class Infoasesoria extends Model
     public function categoria(){
         return $this->belongsTo(Categoria::class);
     }
+
+     public function reuniones()
+    {
+        return $this->hasMany(Reunion::class, 'infoa_id');
+    }
 }

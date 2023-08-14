@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Infoasesoria;
 use App\Models\Registro;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
@@ -126,7 +127,7 @@ class RegistroController extends Controller
             $registros = [];
         } else if ($user->rol_id === 2) {
             // Si el rol_id es igual a 2 (rol de usuario normal), se muestran solo las asesorías del usuario que tengan active=1
-            $asesorias = InfoAsesoria::with('user','categoria')->where('user_id', $user->id)->where('active', 1)->get();
+            $asesorias = InfoAsesoria::with('user', 'categoria')->where('user_id', $user->id)->where('active', 1)->get();
 
             // Verificar si el arreglo de asesorías está vacío y asignar un arreglo vacío a $registros en ese caso
             if ($asesorias->isEmpty()) {
@@ -223,7 +224,7 @@ class RegistroController extends Controller
 
 
 
-//Eliminar asesoria solicitada por parte del estudiante
+    //Eliminar asesoria solicitada por parte del estudiante
     public function eliminarAsesoria($id)
     {
         // Validar que el usuario esté autenticado antes de continuar
@@ -283,6 +284,48 @@ class RegistroController extends Controller
             $asesoria->delete();
 
             return response()->json(['message' => 'Eliminación exitosa'], 200);
+        } else {
+            // Otros roles que no sean 3 o 1 no tienen acceso a esta función
+            return response()->json(['error' => 'No autorizado'], 403);
+        }
+    }
+
+
+    //Me trae la informacion del registro del studiante
+    public function getRegistroStudentById(Request $request, $id)
+    {
+        // Validar que el usuario esté autenticado antes de continuar
+        if (!Auth::check()) {
+            return response()->json(['error' => 'No autorizado'], 401);
+        }
+
+        // Obtener el usuario autenticado a partir del token de autorización en la cabecera
+        $user = Auth::user();
+
+        // Verificar el rol del usuario
+        if ($user->rol_id === 2) {
+            // Obtener el registro por su ID
+            $registro = Registro::find($id);
+
+            if (!$registro) {
+                return response()->json(['error' => 'No se encontró el registro'], 404);
+            }
+
+            // Obtener la información de la asesoría relacionada (infoasesorias)
+            $infoAsesoria = Infoasesoria::find($registro->infoa_id);
+
+            // Obtener la información del usuario relacionado (users)
+            $userRelacionado = User::find($registro->user_id);
+            // Obtener la información del usuario relacionado (users) de la asesoría
+            $userAsesoria = User::find($infoAsesoria->user_id);
+
+            // Devolver la información del registro, la asesoría y el usuario relacionado
+            return response()->json([
+                'registro' => $registro,
+                'infoasesoria' => $infoAsesoria,
+                'usersuscrito' => $userRelacionado,
+                'profesor' => $userAsesoria
+            ], 200);
         } else {
             // Otros roles que no sean 3 o 1 no tienen acceso a esta función
             return response()->json(['error' => 'No autorizado'], 403);

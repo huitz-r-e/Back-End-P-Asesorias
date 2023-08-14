@@ -75,6 +75,7 @@ Route::delete('/asesorias/{id}', [InfoAsesoriaController::class, 'desactivarAses
 Route::post('/pedirAsesoria/{id}', [RegistroController::class, 'altaAsesoria']); //Pedir asesoria por id de asesoria para el estudiante
 Route::get('verAsesorias', [RegistroController::class, 'getRegistros']); //Trae info de asesorias
 Route::get('/verAsesoria/{id}', [RegistroController::class, 'getRegistroById']); //Trae info de asesoria por su id
+Route::get('/verRegistroEstudiante/{id}', [RegistroController::class, 'getRegistroStudentById']); //Trae info del registro por su id 
 Route::put('/actualizarAsesoria/{id}', [RegistroController::class, 'actualizarAsesoria']); //Actualizar info de asesoria
 Route::delete('/eliminarAsesoriaEstudiante/{id}', [RegistroController::class, 'eliminarAsesoria']); //Eliminar registro de estudiante a asesoria
 Route::delete('/eliminarAsesoriaExperto/{id}', [RegistroController::class, 'deleteRegistroById']); //Eliminar asesoria por id de parte del administrador
@@ -99,6 +100,8 @@ Route::delete('/categoria/{id}', [CategoriaController::class, 'deleteCategoryByI
 //Todo lo que tenga que ver con reuniones entre experto y estudiante
 Route::post('/registrarcita/{id}', [ReunionController::class, 'agregarCitaPorId']); //Crear una cita para el estudiante, dada por el experto por medio del id del registro
 Route::put('/confirmarcita/{id}', [ReunionController::class, 'confirmarCitaPorId']); //Confirmar cita por parte del estudiante por id
+Route::get('reunionesexperto', [ReunionController::class, 'obtenerTodasLasReuniones']); //Traer todas las reuniones hechas por un experto
+Route::get('citasestudiante', [ReunionController::class, 'obtenerCitasEstudiante']); //Traer todas las citas para confirmar al estudiante
 
 });
 
